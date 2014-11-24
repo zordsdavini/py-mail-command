@@ -24,7 +24,7 @@ messages = [pop_conn.retr(i) for i in range(1, len(pop_conn.list()[1]) + 1)]
 messages = [b"\n".join(mssg[1]) for mssg in messages]
 # parse message intom an email object
 messages = [parser.BytesParser().parsebytes(mssg) for mssg in messages]
-for message in messages:
+for i, message in enumerate(messages):
     body = message.get_payload().split("\n")
     for row in body:
         e = row.split(' ')
@@ -37,6 +37,9 @@ for message in messages:
             command = config.get('commands', e[1]).split(' ')
             out = check_output(command)
             print(out)
+
+            # delete executed message
+            pop_conn.dele(i + 1)
         except:
             continue
 
